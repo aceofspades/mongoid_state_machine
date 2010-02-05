@@ -1,10 +1,8 @@
-RAILS_ROOT = File.dirname(__FILE__)
-
 require "rubygems"
 require "test/unit"
 
-$:.unshift File.dirname(__FILE__) + "/../lib"
-require File.dirname(__FILE__) + "/../init"
+$:.unshift File.dirname(__FILE__) + "/../../lib"
+require "init"
 
 connection = Mongo::Connection.new
 Mongoid.database = connection.db('state_machine_test')
@@ -63,7 +61,7 @@ class Mongoid::StateMachineTest < Test::Unit::TestCase
       write_inheritable_attribute :event_table, {}
       write_inheritable_attribute :state_column, "state"
 
-      # Clear out any callbacks that were set by acts_as_state_machine.
+      # Clear out any callbacks that were set by state_machine.
       write_inheritable_attribute :before_create, []
       write_inheritable_attribute :after_create, []
     end
@@ -72,14 +70,14 @@ class Mongoid::StateMachineTest < Test::Unit::TestCase
   def test_no_initial_value_raises_exception
     assert_raises(NoInitialState) do
       Conversation.class_eval do
-        acts_as_state_machine
+        state_machine
       end
     end
   end
 
   def test_state_column
     Conversation.class_eval do
-      acts_as_state_machine :initial => :needs_attention, :column => "state_machine"
+      state_machine :initial => :needs_attention, :column => "state_machine"
       state :needs_attention
     end
 
@@ -88,7 +86,7 @@ class Mongoid::StateMachineTest < Test::Unit::TestCase
 
   def test_initial_state_value
     Conversation.class_eval do
-      acts_as_state_machine :initial => :needs_attention
+      state_machine :initial => :needs_attention
       state :needs_attention
     end
 
@@ -97,7 +95,7 @@ class Mongoid::StateMachineTest < Test::Unit::TestCase
 
   def test_initial_state
     Conversation.class_eval do
-      acts_as_state_machine :initial => :needs_attention
+      state_machine :initial => :needs_attention
       state :needs_attention
     end
 
@@ -108,7 +106,7 @@ class Mongoid::StateMachineTest < Test::Unit::TestCase
 
   def test_states_were_set
     Conversation.class_eval do
-      acts_as_state_machine :initial => :needs_attention
+      state_machine :initial => :needs_attention
       state :needs_attention
       state :read
       state :closed
@@ -123,7 +121,7 @@ class Mongoid::StateMachineTest < Test::Unit::TestCase
 
   def test_query_methods_created
     Conversation.class_eval do
-      acts_as_state_machine :initial => :needs_attention
+      state_machine :initial => :needs_attention
       state :needs_attention
       state :read
       state :closed
@@ -139,7 +137,7 @@ class Mongoid::StateMachineTest < Test::Unit::TestCase
 
   def test_event_methods_created
     Conversation.class_eval do
-      acts_as_state_machine :initial => :needs_attention
+      state_machine :initial => :needs_attention
       state :needs_attention
       state :read
       state :closed
@@ -162,7 +160,7 @@ class Mongoid::StateMachineTest < Test::Unit::TestCase
 
   def test_transition_table
     Conversation.class_eval do
-      acts_as_state_machine :initial => :needs_attention
+      state_machine :initial => :needs_attention
       state :needs_attention
       state :read
       state :closed
@@ -182,7 +180,7 @@ class Mongoid::StateMachineTest < Test::Unit::TestCase
 
   def test_next_state_for_event
     Conversation.class_eval do
-      acts_as_state_machine :initial => :needs_attention
+      state_machine :initial => :needs_attention
       state :needs_attention
       state :read
 
@@ -197,7 +195,7 @@ class Mongoid::StateMachineTest < Test::Unit::TestCase
 
   def test_change_state
     Conversation.class_eval do
-      acts_as_state_machine :initial => :needs_attention
+      state_machine :initial => :needs_attention
       state :needs_attention
       state :read
 
@@ -213,7 +211,7 @@ class Mongoid::StateMachineTest < Test::Unit::TestCase
 
   def test_can_go_from_read_to_closed_because_guard_passes
     Conversation.class_eval do
-      acts_as_state_machine :initial => :needs_attention
+      state_machine :initial => :needs_attention
       state :needs_attention
       state :read
       state :closed
@@ -242,7 +240,7 @@ class Mongoid::StateMachineTest < Test::Unit::TestCase
 
   def test_cannot_go_from_read_to_closed_because_of_guard
     Conversation.class_eval do
-      acts_as_state_machine :initial => :needs_attention
+      state_machine :initial => :needs_attention
       state :needs_attention
       state :read
       state :closed
@@ -272,7 +270,7 @@ class Mongoid::StateMachineTest < Test::Unit::TestCase
 
   def test_ignore_invalid_events
     Conversation.class_eval do
-      acts_as_state_machine :initial => :needs_attention
+      state_machine :initial => :needs_attention
       state :needs_attention
       state :read
       state :closed
@@ -303,7 +301,7 @@ class Mongoid::StateMachineTest < Test::Unit::TestCase
 
   def test_entry_action_executed
     Conversation.class_eval do
-      acts_as_state_machine :initial => :needs_attention
+      state_machine :initial => :needs_attention
       state :needs_attention
       state :read, :enter => :read_enter_action
 
@@ -320,7 +318,7 @@ class Mongoid::StateMachineTest < Test::Unit::TestCase
 
   def test_after_actions_executed
     Conversation.class_eval do
-      acts_as_state_machine :initial => :needs_attention
+      state_machine :initial => :needs_attention
       state :needs_attention
       state :closed, :after => :closed_after_action
       state :read, :enter => :read_enter_action,
@@ -355,7 +353,7 @@ class Mongoid::StateMachineTest < Test::Unit::TestCase
 
   def test_after_actions_not_run_on_loopback_transition
     Conversation.class_eval do
-      acts_as_state_machine :initial => :needs_attention
+      state_machine :initial => :needs_attention
       state :needs_attention
       state :closed, :after => :closed_after_action
       state :read, :after => [:read_after_first_action, :read_after_second_action]
@@ -390,7 +388,7 @@ class Mongoid::StateMachineTest < Test::Unit::TestCase
 
   def test_exit_action_executed
     Conversation.class_eval do
-      acts_as_state_machine :initial => :needs_attention
+      state_machine :initial => :needs_attention
       state :junk
       state :needs_attention
       state :read, :exit => lambda { |o| o.read_exit = true }
@@ -413,7 +411,7 @@ class Mongoid::StateMachineTest < Test::Unit::TestCase
 
   def test_entry_and_exit_not_run_on_loopback_transition
     Conversation.class_eval do
-      acts_as_state_machine :initial => :needs_attention
+      state_machine :initial => :needs_attention
       state :needs_attention
       state :read, :exit => lambda { |o| o.read_exit = true }
 
@@ -433,7 +431,7 @@ class Mongoid::StateMachineTest < Test::Unit::TestCase
 
   def test_entry_and_after_actions_called_for_initial_state
     Conversation.class_eval do
-      acts_as_state_machine :initial => :needs_attention
+      state_machine :initial => :needs_attention
       state :needs_attention, :enter => lambda { |o| o.needs_attention_enter = true },
       :after => lambda { |o| o.needs_attention_after = true }
     end
@@ -446,7 +444,7 @@ class Mongoid::StateMachineTest < Test::Unit::TestCase
   def test_run_transition_action_is_private
     Conversation.class_eval do
 
-      acts_as_state_machine :initial => :needs_attention
+      state_machine :initial => :needs_attention
       state :needs_attention
     end
 
@@ -456,7 +454,7 @@ class Mongoid::StateMachineTest < Test::Unit::TestCase
 
   def test_can_access_events_via_event_table
     Conversation.class_eval do
-      acts_as_state_machine :initial => :needs_attention, :column => "state_machine"
+      state_machine :initial => :needs_attention, :column => "state_machine"
       state :needs_attention
       state :junk
 
@@ -472,7 +470,7 @@ class Mongoid::StateMachineTest < Test::Unit::TestCase
 
   def test_custom_state_values
     Conversation.class_eval do
-      acts_as_state_machine :initial => "NEEDS_ATTENTION", :column => "state_machine"
+      state_machine :initial => "NEEDS_ATTENTION", :column => "state_machine"
       state :needs_attention, :value => "NEEDS_ATTENTION"
       state :read, :value => "READ"
 

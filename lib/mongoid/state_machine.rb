@@ -110,7 +110,7 @@ module Mongoid
       #
       # * +column+ - specifies the column name to use for keeping the state (default: state)
       # * +initial+ - specifies an initial state for newly created objects (required)
-      def acts_as_state_machine(options = {})
+      def state_machine(options = {})
         class_eval do
           extend ClassMethods
           include InstanceMethods
