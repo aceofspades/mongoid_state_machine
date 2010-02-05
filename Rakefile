@@ -17,6 +17,6 @@ Rake::RDocTask.new(:rdoc) do |rdoc|
   rdoc.rdoc_dir = 'rdoc'
   rdoc.title    = 'Mongoid State Machine'
   rdoc.rdoc_files.include('README.rdoc')
-  rdoc.rdoc_files.include('TODO')
+  rdoc.rdoc_files.include('TODO.rdoc')
   rdoc.rdoc_files.include('lib/**/*.rb')
 end
