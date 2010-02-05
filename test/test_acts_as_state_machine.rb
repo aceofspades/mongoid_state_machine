@@ -11,7 +11,7 @@ Mongoid.database = connection.db('state_machine_test')
 
 class Conversation
   include Mongoid::Document
-  include ActsAsStateMachine
+  include Mongoid::StateMachine
 
   attr_writer   :can_close
   attr_accessor :read_enter, :read_exit,
@@ -48,8 +48,8 @@ class Conversation
   end
 end
 
-class ActsAsStateMachineTest < Test::Unit::TestCase
-  include ActsAsStateMachine
+class Mongoid::StateMachineTest < Test::Unit::TestCase
+  include Mongoid::StateMachine
 
   def after
     Conversation.destroy_all
