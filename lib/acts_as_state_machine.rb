@@ -59,7 +59,8 @@ module ActsAsStateMachine              #:nodoc:
 
         next_state.entering(record) unless loopback
 
-        record.update_attributes(record.class.state_column => next_state.value)
+        record.send("#{record.class.state_column}=", next_state.value)
+        record.save
 
         next_state.entered(record) unless loopback
         old_state.exited(record) unless loopback
