@@ -11,6 +11,7 @@ Mongoid.database = connection.db('state_machine_test')
 
 class Conversation
   include Mongoid::Document
+  include ActsAsStateMachine
 
   attr_writer   :can_close
   attr_accessor :read_enter, :read_exit,
@@ -56,8 +57,6 @@ class ActsAsStateMachineTest < Test::Unit::TestCase
 
   def teardown
     Conversation.class_eval do
-      include ActsAsStateMachine
-
       write_inheritable_attribute :states, {}
       write_inheritable_attribute :initial_state, nil
       write_inheritable_attribute :transition_table, {}
@@ -73,7 +72,6 @@ class ActsAsStateMachineTest < Test::Unit::TestCase
   def test_no_initial_value_raises_exception
     assert_raises(NoInitialState) do
       Conversation.class_eval do
-        include ActsAsStateMachine
         acts_as_state_machine
       end
     end
@@ -81,8 +79,6 @@ class ActsAsStateMachineTest < Test::Unit::TestCase
 
   def test_state_column
     Conversation.class_eval do
-      include ActsAsStateMachine
-
       acts_as_state_machine :initial => :needs_attention, :column => "state_machine"
       state :needs_attention
     end
@@ -92,8 +88,6 @@ class ActsAsStateMachineTest < Test::Unit::TestCase
 
   def test_initial_state_value
     Conversation.class_eval do
-      include ActsAsStateMachine
-
       acts_as_state_machine :initial => :needs_attention
       state :needs_attention
     end
@@ -103,8 +97,6 @@ class ActsAsStateMachineTest < Test::Unit::TestCase
 
   def test_initial_state
     Conversation.class_eval do
-      include ActsAsStateMachine
-
       acts_as_state_machine :initial => :needs_attention
       state :needs_attention
     end
@@ -116,8 +108,6 @@ class ActsAsStateMachineTest < Test::Unit::TestCase
 
   def test_states_were_set
     Conversation.class_eval do
-      include ActsAsStateMachine
-
       acts_as_state_machine :initial => :needs_attention
       state :needs_attention
       state :read
@@ -133,8 +123,6 @@ class ActsAsStateMachineTest < Test::Unit::TestCase
 
   def test_query_methods_created
     Conversation.class_eval do
-      include ActsAsStateMachine
-
       acts_as_state_machine :initial => :needs_attention
       state :needs_attention
       state :read
@@ -151,8 +139,6 @@ class ActsAsStateMachineTest < Test::Unit::TestCase
 
   def test_event_methods_created
     Conversation.class_eval do
-      include ActsAsStateMachine
-
       acts_as_state_machine :initial => :needs_attention
       state :needs_attention
       state :read
@@ -176,8 +162,6 @@ class ActsAsStateMachineTest < Test::Unit::TestCase
 
   def test_transition_table
     Conversation.class_eval do
-      include ActsAsStateMachine
-
       acts_as_state_machine :initial => :needs_attention
       state :needs_attention
       state :read
@@ -198,8 +182,6 @@ class ActsAsStateMachineTest < Test::Unit::TestCase
 
   def test_next_state_for_event
     Conversation.class_eval do
-      include ActsAsStateMachine
-
       acts_as_state_machine :initial => :needs_attention
       state :needs_attention
       state :read
@@ -215,8 +197,6 @@ class ActsAsStateMachineTest < Test::Unit::TestCase
 
   def test_change_state
     Conversation.class_eval do
-      include ActsAsStateMachine
-
       acts_as_state_machine :initial => :needs_attention
       state :needs_attention
       state :read
@@ -233,8 +213,6 @@ class ActsAsStateMachineTest < Test::Unit::TestCase
 
   def test_can_go_from_read_to_closed_because_guard_passes
     Conversation.class_eval do
-      include ActsAsStateMachine
-
       acts_as_state_machine :initial => :needs_attention
       state :needs_attention
       state :read
@@ -264,8 +242,6 @@ class ActsAsStateMachineTest < Test::Unit::TestCase
 
   def test_cannot_go_from_read_to_closed_because_of_guard
     Conversation.class_eval do
-      include ActsAsStateMachine
-
       acts_as_state_machine :initial => :needs_attention
       state :needs_attention
       state :read
@@ -296,8 +272,6 @@ class ActsAsStateMachineTest < Test::Unit::TestCase
 
   def test_ignore_invalid_events
     Conversation.class_eval do
-      include ActsAsStateMachine
-
       acts_as_state_machine :initial => :needs_attention
       state :needs_attention
       state :read
@@ -329,8 +303,6 @@ class ActsAsStateMachineTest < Test::Unit::TestCase
 
   def test_entry_action_executed
     Conversation.class_eval do
-      include ActsAsStateMachine
-
       acts_as_state_machine :initial => :needs_attention
       state :needs_attention
       state :read, :enter => :read_enter_action
@@ -348,8 +320,6 @@ class ActsAsStateMachineTest < Test::Unit::TestCase
 
   def test_after_actions_executed
     Conversation.class_eval do
-      include ActsAsStateMachine
-
       acts_as_state_machine :initial => :needs_attention
       state :needs_attention
       state :closed, :after => :closed_after_action
@@ -385,8 +355,6 @@ class ActsAsStateMachineTest < Test::Unit::TestCase
 
   def test_after_actions_not_run_on_loopback_transition
     Conversation.class_eval do
-      include ActsAsStateMachine
-
       acts_as_state_machine :initial => :needs_attention
       state :needs_attention
       state :closed, :after => :closed_after_action
@@ -422,8 +390,6 @@ class ActsAsStateMachineTest < Test::Unit::TestCase
 
   def test_exit_action_executed
     Conversation.class_eval do
-      include ActsAsStateMachine
-
       acts_as_state_machine :initial => :needs_attention
       state :junk
       state :needs_attention
@@ -447,8 +413,6 @@ class ActsAsStateMachineTest < Test::Unit::TestCase
 
   def test_entry_and_exit_not_run_on_loopback_transition
     Conversation.class_eval do
-      include ActsAsStateMachine
-
       acts_as_state_machine :initial => :needs_attention
       state :needs_attention
       state :read, :exit => lambda { |o| o.read_exit = true }
@@ -469,8 +433,6 @@ class ActsAsStateMachineTest < Test::Unit::TestCase
 
   def test_entry_and_after_actions_called_for_initial_state
     Conversation.class_eval do
-      include ActsAsStateMachine
-
       acts_as_state_machine :initial => :needs_attention
       state :needs_attention, :enter => lambda { |o| o.needs_attention_enter = true },
       :after => lambda { |o| o.needs_attention_after = true }
@@ -483,7 +445,6 @@ class ActsAsStateMachineTest < Test::Unit::TestCase
 
   def test_run_transition_action_is_private
     Conversation.class_eval do
-      include ActsAsStateMachine
 
       acts_as_state_machine :initial => :needs_attention
       state :needs_attention
@@ -495,8 +456,6 @@ class ActsAsStateMachineTest < Test::Unit::TestCase
 
   def test_can_access_events_via_event_table
     Conversation.class_eval do
-      include ActsAsStateMachine
-
       acts_as_state_machine :initial => :needs_attention, :column => "state_machine"
       state :needs_attention
       state :junk
@@ -513,8 +472,6 @@ class ActsAsStateMachineTest < Test::Unit::TestCase
 
   def test_custom_state_values
     Conversation.class_eval do
-      include ActsAsStateMachine
-
       acts_as_state_machine :initial => "NEEDS_ATTENTION", :column => "state_machine"
       state :needs_attention, :value => "NEEDS_ATTENTION"
       state :read, :value => "READ"
