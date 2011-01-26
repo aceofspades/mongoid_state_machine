@@ -1,5 +1,8 @@
 module Mongoid
   module StateMachine              #:nodoc:
+    
+    VERSION = "0.1"
+    
     class InvalidState < Exception #:nodoc:
     end
     class NoInitialState < Exception #:nodoc:
@@ -179,7 +182,7 @@ module Mongoid
       #
       # Example:
       #
-      # class Order < ActiveRecord::Base
+      # class Order
       #   acts_as_state_machine :initial => :open
       #
       #   state :open
@@ -211,7 +214,7 @@ module Mongoid
       #
       # Example:
       #
-      # class Order < ActiveRecord::Base
+      # class Order
       #   acts_as_state_machine :initial => :open
       #
       #   state :open
