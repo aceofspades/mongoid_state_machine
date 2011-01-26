@@ -4,6 +4,14 @@ It's a customized plugin from http://github.com/omghax/acts_as_state_machine tha
 
 I only removed the Class Methods that were using the method with_scope (ActiveRecord) because it's not supported in Mongoid (not a problem for me)
 
+== Installation
+
+Add the gem into your Gemfile
+
+  gem "mongoid_state_machine", :require => "mongoid/state_machine"
+  
+And run `bundle install`
+
 == Example
 
  class Order
