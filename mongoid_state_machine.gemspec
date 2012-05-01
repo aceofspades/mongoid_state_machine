@@ -1,5 +1,3 @@
-require File.expand_path("../lib/mongoid/state_machine", __FILE__)
-
 Gem::Specification.new do |s|
   s.name        = "mongoid_state_machine"
   s.version     = Mongoid::StateMachine::VERSION
