@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name        = "mongoid_state_machine"
-  s.version     = Mongoid::StateMachine::VERSION
+  s.version     = "0.1"
   s.platform    = Gem::Platform::RUBY
   s.authors     = ["Bruno Azisaka Maciel"]
   s.email       = ["bruno@azisaka.com.br"]
